@@ -1,0 +1,4 @@
+.vim/session.vim
+tmp/
+internal/templates/*_templ.go
+internal/sqlc
