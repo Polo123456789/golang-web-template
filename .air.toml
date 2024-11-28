@@ -1,0 +1,46 @@
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "tmp"
+
+[build]
+  args_bin = []
+  pre_cmd = []
+  cmd = "make build -j 4"
+  post_cmd = []
+  delay = 100
+  exclude_dir = []
+  exclude_file = []
+  exclude_regex = ["_test.go", "_templ.go", ".sql.go"]
+  exclude_unchanged = true
+  follow_symlink = false
+  include_dir = []
+  include_ext = ["go", "templ", "js", "json", "sql", "env"]
+  include_file = []
+  kill_delay = "0s"
+  log = "build-errors.log"
+  send_interrupt = false
+  stop_on_error = true
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  main_only = false
+  silent = false
+  time = false
+
+[misc]
+  clean_on_exit = true
+
+[proxy]
+  app_port = 8080
+  enabled = true
+  proxy_port = 8090
+
+[screen]
+  clear_on_rebuild = true
+  keep_scroll = true
