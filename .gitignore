@@ -1,0 +1,4 @@
+.vim/session.vim
+tmp/
+*_templ.go
+*.sql.go
