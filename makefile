@@ -36,12 +36,9 @@ confirm:
 no-dirty:
 	git diff --exit-code
 
-## install-tools: install all tools listed in tools.go
-.PHONY: install-tools
+.PHONY: install-golangci-lint
 install-tools: tidy
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.63.4
-	go install github.com/Polo123456789/gpx@latest
-	gpx i:install
 
 
 # ==================================================================================== #
@@ -83,13 +80,13 @@ test/cover:
 templates: $(TEMPLATES_DST)
 
 $(TEMPLATES_DST) &: $(TEMPLATES_SRC)
-	gpx templ generate -lazy
+	 go tool templ generate -lazy
 
 .PHONY: sqlc
 sqlc: $(SQLC_DST)
 
 $(SQLC_DST) &: $(SQLC_SRC)
-	gpx sqlc generate
+	go tool sqlc generate
 
 ## build: build the application
 .PHONY: build
@@ -106,7 +103,7 @@ run: build
 ## run/live: run the application with reloading on file changes
 .PHONY: run/live
 run/live:
-	gpx air -c .air.toml --build.bin "${TMPDIR}/bin/${BINARY_NAME}"
+	go tool air -c .air.toml --build.bin "${TMPDIR}/bin/${BINARY_NAME}"
 
 
 # ==================================================================================== #
@@ -130,23 +127,23 @@ production/deploy: build confirm push
 ## migration/status: show the status of migrations
 .PHONY: migration/status
 migration/status:
-	@gpx goose -dir ${MIGRATIONS} sqlite3 ${DB} status
+	@go tool goose -dir ${MIGRATIONS} sqlite3 ${DB} status
 
 
 ## migration/up: run all pending migrations
 .PHONY: migration/up
 migration/up:
-	@gpx goose -dir ${MIGRATIONS} sqlite3 ${DB} up
+	@go tool goose -dir ${MIGRATIONS} sqlite3 ${DB} up
 	@sqlite3 ${DB} .schema > ${CURRENT_SCHEMA}
 
 ## migration/down: undo the last migration
 .PHONY: migration/down
 migration/down:
-	@gpx goose -dir ${MIGRATIONS} sqlite3 ${DB} down
+	@go tool goose -dir ${MIGRATIONS} sqlite3 ${DB} down
 	@sqlite3 ${DB} .schema > ${CURRENT_SCHEMA}
 
 ## migration/create: create a new migration
 .PHONY: migration/create
 migration/create:
 	@read -p "Enter migration name: " name; \
-		gpx goose -dir ${MIGRATIONS} sqlite3 ${DB} create $$name sql
+		go tool goose -dir ${MIGRATIONS} sqlite3 ${DB} create $$name sql
