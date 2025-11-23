@@ -6,8 +6,14 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/charmbracelet/log"
+	_ "modernc.org/sqlite"
+
 	"github.com/Polo123456789/golang-web-template/internal/http"
 )
+
+// Set in config, you set that
+const DEBUG = true
 
 func main() {
 	ctx, cancel := signal.NotifyContext(
@@ -15,7 +21,17 @@ func main() {
 		os.Interrupt, os.Kill,
 	)
 
-	logger := slog.New(slog.NewTextHandler(os.Stderr, nil))
+	var logger *slog.Logger
+	if DEBUG {
+		logger = slog.New(log.NewWithOptions(os.Stderr, log.Options{
+			Level:           log.DebugLevel,
+			ReportTimestamp: false,
+			ReportCaller:    true,
+			CallerOffset:    0,
+		}))
+	} else {
+		logger = slog.New(slog.NewTextHandler(os.Stderr, nil))
+	}
 
 	server := http.NewServer(
 		"0.0.0.0",
